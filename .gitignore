@@ -29,3 +29,7 @@ scripts/check_key.sh
 scripts/write_env.sh
 scripts/run_ubuntu_bootstrap.sh
 scripts/smoke_test.sh
+scripts/strip_coauthor.sh
+scripts/mk_gate_root.py
+scripts/fix_gate.sh
+gate_fix.log

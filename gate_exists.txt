@@ -1,0 +1,16 @@
+bash_test_d=yes
+bash_test_f=yes
+PKG_BEGIN
+{
+  "name": "finedge-linkedin-autogen",
+  "private": true,
+  "description": "FinEdge Mumbai LinkedIn content automation (FastAPI + n8n)",
+  "scripts": {
+    "lint": "python -m compileall -q microservice scripts tests && python -c \"import json; json.load(open('n8n/linkedin_content_workflow.json')); print('lint_ok')\"",
+    "test": "python -m pytest -q"
+  }
+}
+PKG_END
+win 'C:\\C:\\F\\VT Bootcamp\\Project 1' False False
+win 'C:\\C\\F\\VT Bootcamp\\Project 1' True True
+win 'C:\\CCC2F~1\\F\\VT Bootcamp\\Project 1' True True
