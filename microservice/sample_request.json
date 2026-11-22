@@ -1,0 +1,19 @@
+{
+  "brand": {
+    "name": "FinEdge Mumbai",
+    "voice": "Authoritative, data-led, plain-spoken",
+    "tone": "Professional, confident, approachable",
+    "forbidden_topics": ["stock tips", "guaranteed returns", "political commentary"],
+    "cta_style": "Soft invitation to share views in the comments"
+  },
+  "context": {
+    "topic_hints": ["UPI growth", "real-time fraud detection", "compliance automation"],
+    "audience": "CFOs, fintech founders, and risk leaders in India",
+    "campaign": "Trust and security in digital payments",
+    "product_focus": "FinEdge payments and lending platform"
+  },
+  "options": {
+    "idea_count": 3,
+    "min_confidence": 0.7
+  }
+}

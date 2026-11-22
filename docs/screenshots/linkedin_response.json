@@ -1,0 +1,30 @@
+{
+  "ideas": [
+    "How FinEdge Mumbai helps SMEs adopt UPI growth",
+    "How FinEdge Mumbai helps SMEs adopt real-time fraud detection",
+    "How FinEdge Mumbai helps SMEs adopt compliance automation"
+  ],
+  "draft": "India's payments landscape is moving in real time.\n\nAt FinEdge Mumbai, we see teams win when security and speed ship together. Focus this week: UPI growth. Build controls that customers can trust without slowing settlement.\n\nSoft invitation to share views in the comments.",
+  "confidence": 0.82,
+  "hashtags": [
+    "#Fintech",
+    "#DigitalPayments",
+    "#IndiaFinance",
+    "#SME"
+  ],
+  "meta": {
+    "model": "mock",
+    "started_at": "2026-11-22T16:27:50.993729+00:00",
+    "finished_at": "2026-11-22T16:27:50.993776+00:00",
+    "duration_ms": 0,
+    "agents": [
+      "ideation",
+      "drafting",
+      "hashtags",
+      "critic"
+    ],
+    "critic_reason": "Mock critic: on-brand, clear hook, no forbidden topics.",
+    "flags": [],
+    "meets_threshold": true
+  }
+}

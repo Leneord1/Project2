@@ -1,0 +1,703 @@
+{
+  "name": "LinkedIn Content Automation - FinEdge Mumbai",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "67d827be-6041-51f4-b28e-1ff87b04dda6",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9529e21e-564b-5f58-b537-d00ad5e95f54",
+              "name": "brandName",
+              "value": "FinEdge Mumbai",
+              "type": "string"
+            },
+            {
+              "id": "74353f8c-9ff0-52da-9bad-533314655339",
+              "name": "voice",
+              "value": "Authoritative, data-led, plain-spoken",
+              "type": "string"
+            },
+            {
+              "id": "8b0bd0ac-f0a7-5b20-9fc9-7fa2086c92c6",
+              "name": "tone",
+              "value": "Professional, confident, approachable",
+              "type": "string"
+            },
+            {
+              "id": "27adafbe-50cd-595d-8994-7a4a5141740c",
+              "name": "forbiddenTopics",
+              "value": "[\"stock tips\", \"guaranteed returns\", \"political commentary\"]",
+              "type": "array"
+            },
+            {
+              "id": "30deca24-3016-56ae-95dc-69844528d5f9",
+              "name": "ctaStyle",
+              "value": "Soft invitation to share views in the comments",
+              "type": "string"
+            },
+            {
+              "id": "f7375553-14ca-52ac-bbfb-57104ea92a66",
+              "name": "audience",
+              "value": "CFOs, fintech founders, and risk leaders in India",
+              "type": "string"
+            },
+            {
+              "id": "fa443588-ac72-53e6-b4c8-009c2f2bea70",
+              "name": "campaign",
+              "value": "Trust and security in digital payments",
+              "type": "string"
+            },
+            {
+              "id": "543037e2-8104-5ed7-91d5-bcc87e973207",
+              "name": "productFocus",
+              "value": "FinEdge payments and lending platform",
+              "type": "string"
+            },
+            {
+              "id": "a320ae35-3b4d-556d-bddb-3833d70e8252",
+              "name": "topicHints",
+              "value": "[\"UPI growth\", \"real-time fraud detection\", \"compliance automation\"]",
+              "type": "array"
+            },
+            {
+              "id": "7cef1f12-efc6-5556-a0e6-9fd5e07794fa",
+              "name": "ideaCount",
+              "value": 3,
+              "type": "number"
+            },
+            {
+              "id": "69f6e26d-1915-597e-984f-71b4ba034d9c",
+              "name": "dryRun",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "bc58327d-6581-55a4-a229-be59fa20898c",
+              "name": "minConfidence",
+              "value": 0.7,
+              "type": "number"
+            },
+            {
+              "id": "2174f065-990b-51d1-9d1f-d1e2710489b1",
+              "name": "slackWebhookUrl",
+              "value": "https://hooks.slack.com/services/REPLACE/WITH/WEBHOOK",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": false,
+        "options": {}
+      },
+      "id": "89c5a27a-8cb9-5411-ac21-adf8bbce2f48",
+      "name": "Brand Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/linkedin",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ brand: { name: $json.brandName, voice: $json.voice, tone: $json.tone, forbidden_topics: $json.forbiddenTopics, cta_style: $json.ctaStyle }, context: { topic_hints: $json.topicHints, audience: $json.audience, campaign: $json.campaign, product_focus: $json.productFocus }, options: { idea_count: $json.ideaCount, min_confidence: $json.minConfidence } }) }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "id": "70952f81-f33d-5add-9011-ff923224c32b",
+      "name": "AutoGen Microservice",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        300
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 3000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eb5e93c6-233f-57e5-a683-77f2a1a599df",
+              "name": "finalText",
+              "value": "={{ $json.draft }}\n\n{{ $json.hashtags.join(' ') }}",
+              "type": "string"
+            },
+            {
+              "id": "c9bfae6c-3e5c-5344-98bf-c7378072748c",
+              "name": "confidence",
+              "value": "={{ $json.confidence }}",
+              "type": "number"
+            },
+            {
+              "id": "11c55700-2e21-52cf-a5b9-798d818afd99",
+              "name": "minConfidence",
+              "value": "={{ $('Brand Config').first().json.minConfidence }}",
+              "type": "number"
+            },
+            {
+              "id": "28085d66-c600-5457-aaed-7dd465c58cdd",
+              "name": "dryRun",
+              "value": "={{ $('Brand Config').first().json.dryRun }}",
+              "type": "boolean"
+            },
+            {
+              "id": "3198380d-e363-5fe8-93c7-c47b445e87a3",
+              "name": "slackWebhookUrl",
+              "value": "={{ $('Brand Config').first().json.slackWebhookUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "0cd4e9e9-50fb-5100-9808-30a79c3bd630",
+              "name": "ideasSummary",
+              "value": "={{ $json.ideas.map((idea, i) => (i + 1) + '. ' + idea).join('\\n') }}",
+              "type": "string"
+            },
+            {
+              "id": "7812d9c8-fff0-555f-be2e-ed4c4cec8c94",
+              "name": "model",
+              "value": "={{ $json.meta.model }}",
+              "type": "string"
+            },
+            {
+              "id": "8be9a070-44ef-56d0-a295-b7240679e933",
+              "name": "generatedAt",
+              "value": "={{ $json.meta.finished_at }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "2403ce7c-e3bb-50c6-a1e9-0044e0107683",
+      "name": "Compose Final",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "18b1f565-fb57-5f04-9085-a593ae9bb8ca",
+              "leftValue": "={{ $json.confidence }}",
+              "rightValue": "={{ $json.minConfidence }}",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "6cd3941e-02ea-5ae5-b98a-1b39a621ec3d",
+              "leftValue": "={{ $json.dryRun }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ab488fea-766e-5ccc-a3fc-843991741073",
+      "name": "Approval Gate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "postAs": "person",
+        "person": "REPLACE_WITH_LINKEDIN_PERSON_ID",
+        "text": "={{ $json.finalText }}",
+        "shareMediaCategory": "NONE",
+        "additionalFields": {}
+      },
+      "id": "bad7f7a6-d033-5e15-8b81-a9867b7995b3",
+      "name": "LinkedIn Post",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        100
+      ],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "REPLACE",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.slackWebhookUrl }}",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: ':memo: *LinkedIn draft for review*\\nConfidence: ' + $json.confidence + ' (min ' + $json.minConfidence + ') | Dry run: ' + $json.dryRun + '\\n\\n' + $json.finalText + '\\n\\n*Ideas considered*\\n' + $json.ideasSummary }) }}",
+        "options": {}
+      },
+      "id": "010b5355-f629-5030-a92b-dec3b94f5e82",
+      "name": "Slack Review",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Brand Config').first().json.slackWebhookUrl }}",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: ':rotating_light: *LinkedIn automation failed*\\n' + JSON.stringify($json.error) }) }}",
+        "options": {}
+      },
+      "id": "05197ad3-bb23-57fe-8551-fccc6d26734d",
+      "name": "Slack Error Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6c523709-bc6d-5a58-bb34-11add1b51dd5",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "99566053-679e-58cb-9b7e-81287d52c886",
+              "name": "route",
+              "value": "linkedin_live",
+              "type": "string"
+            },
+            {
+              "id": "de4c648b-8ce0-5088-bf28-3d0f3e4f37b9",
+              "name": "status",
+              "value": "ok",
+              "type": "string"
+            },
+            {
+              "id": "497b9167-bfbe-5c43-b564-d18a843db4de",
+              "name": "confidence",
+              "value": "={{ $('Compose Final').first().json.confidence }}",
+              "type": "number"
+            },
+            {
+              "id": "0fa97e6f-b2aa-5cea-acf1-37ef0d895344",
+              "name": "min_confidence",
+              "value": "={{ $('Compose Final').first().json.minConfidence }}",
+              "type": "number"
+            },
+            {
+              "id": "98143b2d-a21e-5ed3-92fd-14dd6fc172a9",
+              "name": "dry_run",
+              "value": "={{ $('Compose Final').first().json.dryRun }}",
+              "type": "boolean"
+            },
+            {
+              "id": "fd3c4cd0-c55b-509e-acf1-b4f042dbd7d9",
+              "name": "model",
+              "value": "={{ $('Compose Final').first().json.model }}",
+              "type": "string"
+            },
+            {
+              "id": "985e418f-c2f2-599c-8aae-40ca5c7a60fc",
+              "name": "draft",
+              "value": "={{ $('Compose Final').first().json.finalText }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": false,
+        "options": {}
+      },
+      "id": "e053339a-04e0-58fa-9ed2-54739a4b01e6",
+      "name": "Log Fields LinkedIn",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1440,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6c523709-bc6d-5a58-bb34-11add1b51dd5",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "51ba60a2-2a73-566f-a32e-264d847a6f6f",
+              "name": "route",
+              "value": "slack_review",
+              "type": "string"
+            },
+            {
+              "id": "de4c648b-8ce0-5088-bf28-3d0f3e4f37b9",
+              "name": "status",
+              "value": "ok",
+              "type": "string"
+            },
+            {
+              "id": "497b9167-bfbe-5c43-b564-d18a843db4de",
+              "name": "confidence",
+              "value": "={{ $('Compose Final').first().json.confidence }}",
+              "type": "number"
+            },
+            {
+              "id": "0fa97e6f-b2aa-5cea-acf1-37ef0d895344",
+              "name": "min_confidence",
+              "value": "={{ $('Compose Final').first().json.minConfidence }}",
+              "type": "number"
+            },
+            {
+              "id": "98143b2d-a21e-5ed3-92fd-14dd6fc172a9",
+              "name": "dry_run",
+              "value": "={{ $('Compose Final').first().json.dryRun }}",
+              "type": "boolean"
+            },
+            {
+              "id": "fd3c4cd0-c55b-509e-acf1-b4f042dbd7d9",
+              "name": "model",
+              "value": "={{ $('Compose Final').first().json.model }}",
+              "type": "string"
+            },
+            {
+              "id": "985e418f-c2f2-599c-8aae-40ca5c7a60fc",
+              "name": "draft",
+              "value": "={{ $('Compose Final').first().json.finalText }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": false,
+        "options": {}
+      },
+      "id": "eca7c98a-6211-5e53-b796-8cf0d07ce179",
+      "name": "Log Fields Slack",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6c523709-bc6d-5a58-bb34-11add1b51dd5",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "d0ee04a2-d079-5b93-abeb-5cf5b9e7baed",
+              "name": "route",
+              "value": "error",
+              "type": "string"
+            },
+            {
+              "id": "9f8c6ac2-9272-54b1-8c8e-af512fd6dccf",
+              "name": "status",
+              "value": "={{ JSON.stringify($json.error) }}",
+              "type": "string"
+            },
+            {
+              "id": "08ac1c7c-08c6-5ef3-95ba-60a514a233ff",
+              "name": "confidence",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "2e76f82a-bfae-537c-bf1b-e6626379e8f3",
+              "name": "min_confidence",
+              "value": "={{ $('Brand Config').first().json.minConfidence }}",
+              "type": "number"
+            },
+            {
+              "id": "06bacb85-9865-5556-a6b9-056755e054e1",
+              "name": "dry_run",
+              "value": "={{ $('Brand Config').first().json.dryRun }}",
+              "type": "boolean"
+            },
+            {
+              "id": "cf3f6ffe-4653-59fb-b8e6-9908d1131db3",
+              "name": "model",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "32456aa8-f2b6-5be1-aadc-3f0f7e76531f",
+              "name": "draft",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": false,
+        "options": {}
+      },
+      "id": "2b401c7b-9149-5fca-b98a-7fa4ed550830",
+      "name": "Log Fields Error",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        960,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "csv",
+        "options": {
+          "headerRow": false,
+          "fileName": "linkedin_run_log.csv"
+        }
+      },
+      "id": "076edd1c-8814-5d1b-9837-6d04f328b98e",
+      "name": "Format Log Row",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "linkedin_run_log.csv",
+        "dataPropertyName": "data",
+        "options": {
+          "append": true
+        }
+      },
+      "id": "ed5561c9-abb4-55bf-8df3-e3e4732d2c26",
+      "name": "Append Log File",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Brand Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Brand Config": {
+      "main": [
+        [
+          {
+            "node": "AutoGen Microservice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AutoGen Microservice": {
+      "main": [
+        [
+          {
+            "node": "Compose Final",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack Error Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Fields Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compose Final": {
+      "main": [
+        [
+          {
+            "node": "Approval Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval Gate": {
+      "main": [
+        [
+          {
+            "node": "LinkedIn Post",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn Post": {
+      "main": [
+        [
+          {
+            "node": "Log Fields LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Review": {
+      "main": [
+        [
+          {
+            "node": "Log Fields Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Fields LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Format Log Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Fields Slack": {
+      "main": [
+        [
+          {
+            "node": "Format Log Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Fields Error": {
+      "main": [
+        [
+          {
+            "node": "Format Log Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Log Row": {
+      "main": [
+        [
+          {
+            "node": "Append Log File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata"
+  },
+  "tags": []
+}

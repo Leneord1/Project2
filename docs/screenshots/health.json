@@ -1,0 +1,6 @@
+{
+  "status": "ok",
+  "model": "gpt-4o-mini",
+  "openai_key_configured": false,
+  "mock_llm": true
+}

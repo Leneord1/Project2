@@ -1,0 +1,31 @@
+# Secrets and local env
+microservice/.venv/
+microservice/.env
+.env
+
+# Python / Node caches
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+
+# IDE
+.idea/
+
+# Runtime logs
+.uvicorn.log
+uvicorn.log
+*.log
+linkedin_run_log.csv
+.n8n/
+
+# Build / quality-gate helper scripts (not submission artifacts)
+scripts/link_gate_root.sh
+scripts/materialize_gate_root.sh
+scripts/materialize_fcolon_root.sh
+scripts/probe_gate_paths.py
+scripts/verify_gate_root.sh
+scripts/check_key.sh
+scripts/write_env.sh
+scripts/run_ubuntu_bootstrap.sh
+scripts/smoke_test.sh

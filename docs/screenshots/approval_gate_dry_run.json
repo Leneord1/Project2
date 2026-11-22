@@ -1,0 +1,9 @@
+{
+  "final_text": "India's payments landscape is moving in real time.\n\nAt FinEdge Mumbai, we see teams win when security and speed ship together. Focus this week: UPI growth. Build controls that customers can trust without slowing settlement.\n\nSoft invitation to share views in the comments.\n\n#Fintech #DigitalPayments #IndiaFinance #SME",
+  "confidence": 0.82,
+  "min_confidence": 0.7,
+  "dry_run_route": "slack_review",
+  "low_confidence_route": "slack_review",
+  "live_ready_route": "linkedin_live",
+  "slack_message_preview": "LinkedIn draft for review | confidence=0.82 | dryRun=True\n\nIndia's payments landscape is moving in real time.\n\nAt FinEdge Mumbai, we see teams win when security and speed ship together. Focus this week: UPI growth. Build controls that customers can trust without slowing settlement.\n\nSoft invitation to share views in the comments.\n\n#Fintech #DigitalPayments #IndiaFinance #SME"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "finedge-linkedin-autogen",
+  "private": true,
+  "description": "FinEdge Mumbai LinkedIn content automation (FastAPI + n8n)",
+  "scripts": {
+    "lint": "python -m compileall -q microservice scripts tests && python -c \"import json; json.load(open('n8n/linkedin_content_workflow.json')); print('lint_ok')\"",
+    "test": "python -m pytest -q"
+  }
+}
